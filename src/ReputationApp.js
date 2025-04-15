@@ -6,7 +6,6 @@ const CONTRACT_ADDRESS = "0x26270A1E69E5976A6671209F633E22A8e6F67cb1";
 
 function ReputationApp() {
   const [account, setAccount] = useState("");
-  const [isOwner, setIsOwner] = useState(false);
   const [score, setScore] = useState(null);
   const [level, setLevel] = useState(null);
   const [tokenId, setTokenId] = useState(null);
@@ -32,25 +31,12 @@ function ReputationApp() {
         setStatus("Connecting wallet...");
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         setAccount(accounts[0]);
-        checkIfOwner(accounts[0]);
         setStatus("");
       } catch (error) {
         setStatus("Failed to connect wallet: " + error.message);
       }
     } else {
       setStatus("Please install MetaMask");
-    }
-  };
-
-  // Check if connected account is contract owner
-  const checkIfOwner = async (userAddress) => {
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi.abi, provider);
-      const contractOwner = await contract.owner();
-      setIsOwner(userAddress.toLowerCase() === contractOwner.toLowerCase());
-    } catch (error) {
-      console.error("Error checking owner:", error);
     }
   };
 
@@ -109,7 +95,7 @@ function ReputationApp() {
 
   // Add new action type
   const addActionType = async () => {
-    if (!isOwner || !newActionType || !newActionPoints) return;
+    if (!newActionType || !newActionPoints) return;
     setLoading(true);
     setStatus(`Adding new action type: ${newActionType}...`);
     try {
@@ -130,7 +116,7 @@ function ReputationApp() {
 
   // Add new reputation level
   const addReputationLevel = async () => {
-    if (!isOwner || !newLevelName || !newLevelThreshold || !newLevelUri) return;
+    if (!newLevelName || !newLevelThreshold || !newLevelUri) return;
     setLoading(true);
     setStatus(`Adding new reputation level: ${newLevelName}...`);
     try {
@@ -151,7 +137,7 @@ function ReputationApp() {
 
   // Increase reputation
   const increaseReputation = async () => {
-    if (!isOwner || !targetAddress || !reputationAmount) return;
+    if (!targetAddress || !reputationAmount) return;
     setLoading(true);
     setStatus(`Increasing reputation for ${targetAddress}...`);
     try {
@@ -172,7 +158,7 @@ function ReputationApp() {
 
   // Decrease reputation
   const decreaseReputation = async () => {
-    if (!isOwner || !targetAddress || !reputationAmount) return;
+    if (!targetAddress || !reputationAmount) return;
     setLoading(true);
     setStatus(`Decreasing reputation for ${targetAddress}...`);
     try {
@@ -202,10 +188,8 @@ function ReputationApp() {
       window.ethereum.on('accountsChanged', (accounts) => {
         if (accounts.length > 0) {
           setAccount(accounts[0]);
-          checkIfOwner(accounts[0]);
         } else {
           setAccount("");
-          setIsOwner(false);
         }
       });
     }
@@ -257,7 +241,7 @@ function ReputationApp() {
             id="action-select"
             value={selectedAction}
             onChange={(e) => setSelectedAction(e.target.value)}
-            disabled={loading || !isOwner}
+            disabled={loading}
           >
             {actionTypes.map((action) => (
               <option key={action} value={action}>
@@ -266,135 +250,128 @@ function ReputationApp() {
             ))}
           </select>
         </div>
-        <button onClick={completeAction} disabled={loading || !isOwner}>
+        <button onClick={completeAction} disabled={loading}>
           {loading ? "Processing..." : "Complete Action"}
         </button>
-        {!isOwner && (
-          <p style={{fontSize: "13px", color: "#ff6a6a", textAlign: "center"}}>
-            Only contract owner can complete actions
-          </p>
-        )}
       </div>
 
-      {/* Admin Section */}
-      {isOwner && (
-        <>
-          <div className="card">
-            <div className="card-title">Add New Action Type</div>
-            <div className="input-group">
-              <label htmlFor="new-action">Action Name:</label>
-              <input
-                id="new-action"
-                type="text"
-                placeholder="e.g., STAKE_TOKENS"
-                value={newActionType}
-                onChange={(e) => setNewActionType(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="action-points">Points:</label>
-              <input
-                id="action-points"
-                type="number"
-                placeholder="e.g., 30"
-                value={newActionPoints}
-                onChange={(e) => setNewActionPoints(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <button 
-              onClick={addActionType} 
-              disabled={loading || !newActionType || !newActionPoints}
-            >
-              Add Action Type
-            </button>
-          </div>
+      {/* Add New Action Type */}
+      <div className="card">
+        <div className="card-title">Add New Action Type</div>
+        <div className="input-group">
+          <label htmlFor="new-action">Action Name:</label>
+          <input
+            id="new-action"
+            type="text"
+            placeholder="e.g., STAKE_TOKENS"
+            value={newActionType}
+            onChange={(e) => setNewActionType(e.target.value)}
+            disabled={loading}
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="action-points">Points:</label>
+          <input
+            id="action-points"
+            type="number"
+            placeholder="e.g., 30"
+            value={newActionPoints}
+            onChange={(e) => setNewActionPoints(e.target.value)}
+            disabled={loading}
+          />
+        </div>
+        <button 
+          onClick={addActionType} 
+          disabled={loading || !newActionType || !newActionPoints}
+        >
+          Add Action Type
+        </button>
+      </div>
 
-          <div className="card">
-            <div className="card-title">Add Reputation Level</div>
-            <div className="input-group">
-              <label htmlFor="level-name">Level Name:</label>
-              <input
-                id="level-name"
-                type="text"
-                placeholder="e.g., Legend"
-                value={newLevelName}
-                onChange={(e) => setNewLevelName(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="level-threshold">Threshold:</label>
-              <input
-                id="level-threshold"
-                type="number"
-                placeholder="e.g., 3000"
-                value={newLevelThreshold}
-                onChange={(e) => setNewLevelThreshold(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="level-uri">Token URI:</label>
-              <input
-                id="level-uri"
-                type="text"
-                placeholder="e.g., ipfs://QmHashX"
-                value={newLevelUri}
-                onChange={(e) => setNewLevelUri(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <button 
-              onClick={addReputationLevel} 
-              disabled={loading || !newLevelName || !newLevelThreshold || !newLevelUri}
-            >
-              Add Reputation Level
-            </button>
-          </div>
+      {/* Add Reputation Level */}
+      <div className="card">
+        <div className="card-title">Add Reputation Level</div>
+        <div className="input-group">
+          <label htmlFor="level-name">Level Name:</label>
+          <input
+            id="level-name"
+            type="text"
+            placeholder="e.g., Legend"
+            value={newLevelName}
+            onChange={(e) => setNewLevelName(e.target.value)}
+            disabled={loading}
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="level-threshold">Threshold:</label>
+          <input
+            id="level-threshold"
+            type="number"
+            placeholder="e.g., 3000"
+            value={newLevelThreshold}
+            onChange={(e) => setNewLevelThreshold(e.target.value)}
+            disabled={loading}
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="level-uri">Token URI:</label>
+          <input
+            id="level-uri"
+            type="text"
+            placeholder="e.g., ipfs://QmHashX"
+            value={newLevelUri}
+            onChange={(e) => setNewLevelUri(e.target.value)}
+            disabled={loading}
+          />
+        </div>
+        <button 
+          onClick={addReputationLevel} 
+          disabled={loading || !newLevelName || !newLevelThreshold || !newLevelUri}
+        >
+          Add Reputation Level
+        </button>
+      </div>
 
-          <div className="card">
-            <div className="card-title">Modify Reputation</div>
-            <div className="input-group">
-              <label htmlFor="target-address">Target Address:</label>
-              <input
-                id="target-address"
-                type="text"
-                placeholder="0x..."
-                value={targetAddress}
-                onChange={(e) => setTargetAddress(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="rep-amount">Amount:</label>
-              <input
-                id="rep-amount"
-                type="number"
-                placeholder="e.g., 50"
-                value={reputationAmount}
-                onChange={(e) => setReputationAmount(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px"}}>
-              <button 
-                onClick={increaseReputation} 
-                disabled={loading || !targetAddress || !reputationAmount}
-              >
-                Increase
-              </button>
-              <button 
-                onClick={decreaseReputation} 
-                disabled={loading || !targetAddress || !reputationAmount}
-              >
-                Decrease
-              </button>
-            </div>
-          </div>
-        </>
-      )}
+      {/* Modify Reputation */}
+      <div className="card">
+        <div className="card-title">Modify Reputation</div>
+        <div className="input-group">
+          <label htmlFor="target-address">Target Address:</label>
+          <input
+            id="target-address"
+            type="text"
+            placeholder="0x..."
+            value={targetAddress}
+            onChange={(e) => setTargetAddress(e.target.value)}
+            disabled={loading}
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="rep-amount">Amount:</label>
+          <input
+            id="rep-amount"
+            type="number"
+            placeholder="e.g., 50"
+            value={reputationAmount}
+            onChange={(e) => setReputationAmount(e.target.value)}
+            disabled={loading}
+          />
+        </div>
+        <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px"}}>
+          <button 
+            onClick={increaseReputation} 
+            disabled={loading || !targetAddress || !reputationAmount}
+          >
+            Increase
+          </button>
+          <button 
+            onClick={decreaseReputation} 
+            disabled={loading || !targetAddress || !reputationAmount}
+          >
+            Decrease
+          </button>
+        </div>
+      </div>
 
       {status && <div className="status" style={{gridColumn: "1 / span 2"}}>{status}</div>}
     </div>
