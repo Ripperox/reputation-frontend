@@ -1,71 +1,34 @@
-# Reputation System DApp
+# Reputation System Frontend
 
-A full-stack decentralized application for managing on-chain reputation using soulbound tokens (SBTs).  
-Built with Solidity (Hardhat) and React.
+This is the React frontend for the Reputation System dApp, which allows users to earn, view, and manage on-chain reputation using Soulbound Tokens (SBTs).
+
+**The smart contract is deployed on the Sepolia Ethereum test network.**
 
 ---
 
 ## Features
 
-- **Reputation Scores:** Assign and track reputation for any wallet address.
-- **Soulbound Tokens (SBTs):** Mint non-transferable NFTs representing reputation levels.
-- **Action System:** Complete actions (e.g., vote, verify, complete task) to earn reputation.
-- **Dynamic Levels:** Add new reputation levels and action types on-chain.
-- **Adminless Demo:** All features are accessible to any connected wallet (for demo/testing).
+- **Connect Wallet:** Use MetaMask or any EVM-compatible wallet.
+- **View Reputation:** See your current reputation score, level, and SBT status.
+- **Complete Actions:** Perform actions (e.g., VOTE_IN_DAO, COMPLETE_TASK, VERIFY_ACCOUNT) to increase your reputation.
+- **Add Actions/Levels:** Add new action types and reputation levels.
+- **Modify Reputation:** Increase or decrease reputation for any address.
+- **Soulbound Tokens:** View your SBT token and its metadata.
 
 ---
 
-## Project Structure
+## Requirements
 
-```
+- **MetaMask** (or any EVM-compatible wallet) installed in your browser.
+- **Sepolia Testnet**: Your wallet must be connected to the Sepolia network and have some Sepolia ETH for transactions.
+  - [How to add Sepolia to MetaMask](https://chainlist.org/chain/11155111)
+  - [Get Sepolia ETH from a faucet](https://sepoliafaucet.com/)
 
-/ReputationFinal         \# Hardhat backend (Solidity contracts)
-/reputation-frontend     \# React frontend (UI)
-
-```
-
+---
 ---
 
 ## Getting Started
    https://reputation-frontend-koxohx3yn-ripperoxs-projects.vercel.app/
-## Usage
-
-- **Connect Wallet:** Click "Connect Wallet" to use your Ethereum wallet (MetaMask, etc.).
-- **View Profile:** See your reputation score, level, and SBT status.
-- **Complete Actions:** Select and complete actions to increase your reputation.
-- **Add Actions/Levels:** Add new action types and reputation levels.
-- **Modify Reputation:** Increase or decrease reputation for any address.
-
----
-
-## Deployment
-
-### Deploy Frontend to Vercel
-
-1. Push your frontend code to GitHub.
-2. Go to [vercel.com](https://vercel.com), import your repo, and deploy.
-3. Or, use the CLI:
-```
-
-cd reputation-frontend
-vercel --prod
-
-```
-
----
-
-## Security Note
-
-&gt; **This demo version allows any user to access all features.  
-&gt; For production, restrict sensitive functions to the contract owner or admins.**
-
----
-
-## License
-
-MIT
-
----
 
 ## Credits
 
