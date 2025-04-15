@@ -1,38 +1,168 @@
-.App {
-  text-align: center;
+body, html, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #181a20;
+  color: #eaeaea;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.main-grid {
+  display: grid;
+  grid-template-rows: 70px 1fr;
+  height: 100vh;
+  width: 100vw;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.header {
+  grid-row: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 2rem;
+  font-weight: 700;
+  background: #23272f;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #222;
+}
+
+.content {
+  grid-row: 2;
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  padding: 32px;
+  height: 100%;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+  .content {
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px;
+  }
+  .header {
+    font-size: 1.3rem;
+    padding: 12px 0;
+  }
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+  max-width: 900px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.card {
+  background: #23272f;
+  border-radius: 14px;
+  box-shadow: 0 4px 32px #000a;
+  padding: 24px 18px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 0;
+}
+
+.card-title {
+  font-weight: 700;
+  color: #4f8cff;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+button {
+  background: linear-gradient(90deg, #4f8cff 0%, #3358ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px #0003;
+  width: 100%;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #3358ff 0%, #4f8cff 100%);
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background: #333;
+  cursor: not-allowed;
+  transform: none;
+}
+
+p {
+  font-size: 1.05rem;
+  margin: 8px 0;
+  width: 100%;
+  text-align: left;
+}
+
+.status {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #1a1d23;
+  color: #4f8cff;
+  font-weight: 500;
+  border: 1px solid #4f8cff33;
+  text-align: center;
+  width: 100%;
+}
+
+.sbt {
+  color: #00e1ff;
+  font-weight: 700;
+}
+
+.level {
+  color: #ffd700;
+  font-weight: 700;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+input, select {
+  background: #1a1d23;
+  border: 1px solid #333;
+  border-radius: 6px;
   color: white;
+  padding: 10px 12px;
+  font-size: 14px;
+  margin-top: 6px;
 }
 
-.App-link {
-  color: #61dafb;
+input:focus, select:focus {
+  outline: none;
+  border-color: #4f8cff;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+label {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #ccc;
 }
